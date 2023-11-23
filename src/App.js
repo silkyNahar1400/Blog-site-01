@@ -1,24 +1,30 @@
-import logo from './logo.svg';
+import React, { useState, useEffect} from 'react';
 import './App.css';
+import Header from './components/header/Header';
+import MainBody from './components/body/mainBody';
+import { Route, Routes } from 'react-router-dom';
+import { createContext } from 'react';
+import Post from './components/routes/post';
 
+export const MyContext = createContext("");
 function App() {
+  const [photos, setPhotos] = useState([]);
+  useEffect(() =>{
+    fetch('https://pixabay.com/api/?key=40830798-b276f19db689ffa165a775b1c&q=yellow+flowers&image_type=photo&pretty=true')
+  .then(res => res.json())
+  .then (data => setPhotos(data.hits));
+ 
+}, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <MyContext.Provider value={photos}>
+      <Header/>
+      <Routes>
+    <Route exact path="/" element = {<MainBody/>} />
+    <Route  path="/home" element = {<MainBody/>} />
+    <Route  path="/post/:id" element = { <Post/>} />
+      </Routes>
+      </MyContext.Provider>
+  
   );
 }
 
